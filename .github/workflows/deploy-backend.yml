@@ -108,6 +108,11 @@ jobs:
           kubectl get pods
           kubectl get services
 
+      - name: Check for unhealthy pods
+        run: |
+          kubectl get pods -l app=backend \
+            --field-selector=status.phase!=Running,status.phase!=Succeeded
+
       - name: Deployment summary
         if: success()
         run: |
