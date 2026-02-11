@@ -56,6 +56,19 @@ jobs:
           sarif_file: 'trivy-results.sarif'
 
       - name: Push image to Amazon ECR
+      - name: Check ECR repository exists
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          # Check if ECR repository exists, create if it doesn't
+          if ! aws ecr describe-repositories --repository-names $ECR_REPOSITORY --region $AWS_REGION >/dev/null 2>&1; then
+            echo "ECR repository $ECR_REPOSITORY does not exist. Creating..."
+            aws ecr create-repository --repository-name $ECR_REPOSITORY --region $AWS_REGION
+            echo "✅ ECR repository created successfully"
+          else
+            echo "✅ ECR repository $ECR_REPOSITORY already exists"
+          fi
+
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
