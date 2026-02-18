@@ -38,3 +38,4 @@ jobs:
         password: ${{secrets.DOCKER_PASSWORD}}
         repository: ${{secrets.DOCKERHUB_REPO}}
         push: true
+        tags: puneetgavri/febdemoapp:tagname
